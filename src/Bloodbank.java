@@ -19,7 +19,12 @@ public class Bloodbank {
                 System.out.println("3. search a donor");
                 System.out.println("4. update donor");
                 System.out.println("5. Delete donor");
-                System.out.println("6.Exit");
+                System.out.println("6. Search donor by specific letter in name ");
+                System.out.println("7. Display donor details by blood bllod group category");
+                System.out.println("8. Total number of donors by category");
+                System.out.println("9. Display minimum donor age");
+                System.out.println("10.Display maximum donor age");
+                System.out.println("11.Exit\n");
 
                 choice=sc.nextInt();
                 switch(choice)
@@ -37,7 +42,7 @@ public class Bloodbank {
                         gender=sc.next();
                         System.out.println("Enter the blood group");
                         bg=sc.next();
-                        System.out.println("New donor added");
+                        System.out.println("New donor added\n");
                         try
                         {
                             Class.forName("com.mysql.jdbc.Driver");
@@ -128,12 +133,10 @@ public class Bloodbank {
                         phno=sc.nextDouble();
                         System.out.println("Enter the age to be updated");
                         age=sc.nextInt();
-                        System.out.println("Enter the gender to be updated");
-                        gender=sc.next();
                         try {
                             Class.forName("com.mysql.jdbc.Driver");
                             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbankdb", "root", "");
-                            String sql = "UPDATE `donor` SET `address`='"+address+"',`phno`='"+phno+"',`age`='"+age+"',`sex`='"+gender+"' WHERE `name`='"+nam+"'";
+                            String sql = "UPDATE `donor` SET `address`='"+address+"',`phno`='"+phno+"',`age`='"+age+"' WHERE `name`='"+nam+"'";
                             Statement stmt = con.createStatement();
                             stmt.executeUpdate(sql);
                             System.out.println("updated successfully");
@@ -158,6 +161,133 @@ public class Bloodbank {
 
                         break;
                     case 6:
+                        System.out.println("Enter the letter to search the donor");
+                        String sl=sc.next();
+                        try {
+                            Class.forName("com.mysql.jdbc.Driver");
+                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbankdb", "root", "");
+                            String sql = "SELECT `name`, `address`, `phno`, `age`, `sex`, `bloodgp` FROM `donor` WHERE `name` LIKE '"+sl+"%'";
+                            Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery(sql);
+                            while (rs.next()) {
+                                String getName=rs.getString("name");
+                                String getAddress=rs.getString("address");
+                                String getPhno=rs.getString("phno");
+                                String getAge=rs.getString("age");
+                                String getGender=rs.getString("sex");
+                                String getBg=rs.getString("bloodgp");
+                                System.out.println("Donor Name     : "+getName);
+                                System.out.println("Address        : "+getAddress);
+                                System.out.println("Phone Number   : "+getPhno);
+                                System.out.println("Age            : "+getAge);
+                                System.out.println("Gender         : "+getGender);
+                                System.out.println("Blood Group    : "+getBg+"\n");
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(e);
+                        }break;
+                    case 7:
+                        System.out.println("Enter the blood group");
+                        String bg1=sc.next();
+                        try {
+                            Class.forName("com.mysql.jdbc.Driver");
+                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbankdb", "root", "");
+                            String sql ="SELECT `name`, `address`, `phno`, `age`, `sex`, `bloodgp` FROM `donor` WHERE `bloodgp`='"+bg1+"'";
+                            Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery(sql);
+                            while (rs.next()) {
+                                String getName=rs.getString("name");
+                                String getAddress=rs.getString("address");
+                                String getPhno=rs.getString("phno");
+                                String getAge=rs.getString("age");
+                                String getGender=rs.getString("sex");
+                                String getBg=rs.getString("bloodgp");
+                                System.out.println("Donor Name     : "+getName);
+                                System.out.println("Address        : "+getAddress);
+                                System.out.println("Phone Number   : "+getPhno);
+                                System.out.println("Age            : "+getAge);
+                                System.out.println("Gender         : "+getGender);
+                                System.out.println("Blood Group    : "+getBg+"\n");
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(e);
+                        }
+                        break;
+                    case 8:
+                        try {
+                            Class.forName("com.mysql.jdbc.Driver");
+                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbankdb", "root", "");
+                            String sql = "SELECT COUNT(`id`) `id`,`bloodgp` FROM `donor` GROUP BY`bloodgp`";
+                            Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery(sql);
+                            while (rs.next()) {
+                                String getId = rs.getString("id");
+                                String getBg = rs.getString("bloodgp");
+                                System.out.println("Count : " + getId + "    " + getBg + "\n");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(e);}break;
+
+                    case 9:
+                        try {
+                            Class.forName("com.mysql.jdbc.Driver");
+                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbankdb", "root", "");
+                            String sql = "SELECT MIN(`age`) `age`,`name`,`address`,`phno` FROM `donor`";
+                            Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery(sql);
+                            while (rs.next()) {
+                                String getAge = rs.getString("age");
+                                String getName = rs.getString("name");
+                                String getAddress=rs.getString("address");
+                                String getPhno=rs.getString("phno");
+                                //String getBg = rs.getString("bloodgp");
+                                System.out.println("Younger donor details");
+                                System.out.println("Name     : "+getName);
+                                System.out.println("Age      :"+getAge);
+                                System.out.println("Address  :"+getAddress);
+                                System.out.println("Ph No    :"+getPhno+"\n");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(e);
+                        }
+                        break;
+                    case 10:
+                        try {
+                            Class.forName("com.mysql.jdbc.Driver");
+                            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodbankdb", "root", "");
+                            String sql = "SELECT MAX(`age`) `age`,`name`,`address`,`phno` FROM `donor`";
+                            Statement stmt = con.createStatement();
+                            ResultSet rs = stmt.executeQuery(sql);
+                            while (rs.next()) {
+                                String getAge = rs.getString("age");
+                                String getName = rs.getString("name");
+                                String getAddress=rs.getString("address");
+                                String getPhno=rs.getString("phno");
+                                //String getBg = rs.getString("bloodgp");
+                                System.out.println("Elder donor details");
+                                System.out.println("Name     : "+getName);
+                                System.out.println("Age      :"+getAge);
+                                System.out.println("Address  :"+getAddress);
+                                System.out.println("Ph No    :"+getPhno+"\n");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(e);
+                        }
+                        break;
+
+                    case 11:
                         System.exit(0);
                     default:
                         System.out.println("Enter correct choice");
